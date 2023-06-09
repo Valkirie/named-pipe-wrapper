@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MemoryPack;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
@@ -25,8 +26,6 @@ namespace NamedPipeWrapper.IO
         /// Gets a value indicating whether the pipe is connected or not.
         /// </summary>
         public bool IsConnected { get; private set; }
-
-        private readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
 
         /// <summary>
         /// Constructs a new <c>PipeStreamReader</c> object that reads data from the given <paramref name="stream"/>.
@@ -66,10 +65,7 @@ namespace NamedPipeWrapper.IO
         {
             var data = new byte[len];
             BaseStream.Read(data, 0, len);
-            using (var memoryStream = new MemoryStream(data))
-            {
-                return (T) _binaryFormatter.Deserialize(memoryStream);
-            }
+            return MemoryPackSerializer.Deserialize<T>(data);
         }
 
         #endregion

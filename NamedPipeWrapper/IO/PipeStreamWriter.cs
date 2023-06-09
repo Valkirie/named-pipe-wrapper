@@ -1,3 +1,4 @@
+using MemoryPack;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,8 +22,6 @@ namespace NamedPipeWrapper.IO
         /// </summary>
         public PipeStream BaseStream { get; private set; }
 
-        private readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
-
         /// <summary>
         /// Constructs a new <c>PipeStreamWriter</c> object that writes to given <paramref name="stream"/>.
         /// </summary>
@@ -39,11 +38,7 @@ namespace NamedPipeWrapper.IO
         {
             try
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    _binaryFormatter.Serialize(memoryStream, obj);
-                    return memoryStream.ToArray();
-                }
+                return MemoryPackSerializer.Serialize(obj);
             }
             catch
             {
